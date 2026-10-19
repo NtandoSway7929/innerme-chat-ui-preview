@@ -1,8 +1,8 @@
 {
   "name": "Swayphics Admin",
   "short_name": "Swayphics",
-  "start_url": "/admin-dashboard/",
-  "scope": "/admin-dashboard/",
+  "start_url": "/innerme-chat-ui-preview/admin-dashboard/",
+  "scope": "/innerme-chat-ui-preview/admin-dashboard/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#002096",

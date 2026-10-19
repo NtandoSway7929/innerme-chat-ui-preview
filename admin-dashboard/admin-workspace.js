@@ -28038,6 +28038,43 @@ function simpleBars(items, color) {
             );
         } catch (error) {
             state.initialDataLoading = false;
+
+            /*
+             * Preview-only accommodation: the isolated auth/provider project
+             * intentionally does not carry production CRM tables. Render the
+             * actual InnerMe Chat shell with empty workspace state so layout,
+             * responsive styling and keyboard interactions can be inspected.
+             * This branch is not present in SWA/PR #96 and cannot run on the
+             * production domain because the preview flag is injected only by
+             * the isolated preview copy of admin-dashboard/index.html.
+             */
+            if (window.__SWAYPHICS_INNERME_TEST_PREVIEW__ === true) {
+                state.initialDataLoaded = true;
+                state.initialDataError = null;
+                [
+                    "tasks", "leads", "followups", "clients", "projects",
+                    "quotes", "payments", "enquiries", "activities",
+                    "announcements", "invoices", "services", "portalRequests",
+                    "leadProposals", "documents", "communications"
+                ].forEach(function (key) {
+                    if (!Array.isArray(state[key])) state[key] = [];
+                });
+                try {
+                    renderShell();
+                    renderView(true);
+                    console.warn(
+                        "Isolated UI preview rendered with empty workspace fixtures; " +
+                        "the test database does not contain the full admin schema."
+                    );
+                } catch (previewRenderError) {
+                    console.error(
+                        "Isolated preview chat shell render failed:",
+                        previewRenderError
+                    );
+                }
+                return;
+            }
+
             state.initialDataError =
                 error.message ||
                 "Unable to load workspace data.";

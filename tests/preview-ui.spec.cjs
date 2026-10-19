@@ -54,9 +54,11 @@ test("InnerMe preview streams and safely formats a local mock response", async (
     }).click();
 
     await expect(page).toHaveURL(/\/admin-dashboard\/\?view=swayphics-ai/);
-    await page.waitForTimeout(800);
+    await page.waitForLoadState("domcontentloaded").catch(() => {});
+    await page.waitForTimeout(500);
     console.log("SIMULATION_DEBUG", JSON.stringify(await page.evaluate(() => ({
       url: location.href,
+      readyState: document.readyState,
       accessTokenPresent: Boolean(sessionStorage.getItem("swayphics_admin_access_token")),
       accessTokenPayload: (() => {
         try {
@@ -68,7 +70,7 @@ test("InnerMe preview streams and safely formats a local mock response", async (
       })(),
       previewFlag: window.__SWAYPHICS_INNERME_TEST_PREVIEW__,
       mockStreamCount: window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__,
-      bodyText: document.body.innerText.slice(0, 700)
+      bodyText: document.body ? document.body.innerText.slice(0, 700) : "<body not attached>"
     })), null, 2));
     await expect(page.locator("#innerme-test-preview-banner")).toBeVisible();
     await expect(page.locator("#sway-ai-input")).toBeVisible({ timeout: 8000 });

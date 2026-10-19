@@ -553,8 +553,8 @@
         const encodeBase64Url = function (value) {
             return btoa(value)
                 .replace(/=/g, "")
-                .replace(/\\+/g, "-")
-                .replace(/\\//g, "_");
+                .replaceAll("+", "-")
+                .replaceAll("/", "_");
         };
 
         const header = encodeBase64Url(

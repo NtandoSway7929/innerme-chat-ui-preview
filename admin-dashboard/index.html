@@ -9651,7 +9651,7 @@ body.sway-dark-mode .sway-ai-form {
 
 
         /* The row menus are portalled to <body>
-<div id="innerme-test-preview-banner" role="status">TEST-ONLY &nbsp;·&nbsp; ISOLATED TEST DATA &nbsp;·&nbsp; CHAT SENDS OFF</div> while open, so style them outside the workspace tree. */
+<div id="innerme-test-preview-banner" role="status">TEST-ONLY &nbsp;·&nbsp; MOCK STREAM &nbsp;·&nbsp; NO MODEL CALLS</div> while open, so style them outside the workspace tree. */
         .sway-actions-dropdown .sway-row-action,
         .sway-lead-actions-dropdown .sway-row-action {
             min-height: 40px !important;
@@ -11510,6 +11510,7 @@ html.dark-mode .sway-ai-revenue-opportunity {
 (function () {
  "use strict"; var TEST_ORIGIN="https://ofqofhnlzbouclvvrmzd.supabase.co";
  window.__SWAYPHICS_INNERME_TEST_PREVIEW__=true;
+ window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__=0;
  if(window.__SWAYPHICS_PREVIEW_GUARD_INSTALLED__)return;
  window.__SWAYPHICS_PREVIEW_GUARD_INSTALLED__=true;
  var nativeFetch=window.fetch.bind(window);
@@ -11523,7 +11524,42 @@ html.dark-mode .sway-ai-revenue-opportunity {
   if(readOnly)return nativeFetch(input,init);
   if(target.origin===TEST_ORIGIN&&method==="POST"){
    if(target.pathname==="/auth/v1/token"||target.pathname==="/auth/v1/logout")return nativeFetch(input,init);
-   if(target.pathname==="/functions/v1/swayphics-ai")return blocked("Chat sending is disabled in this visual QA preview.");
+   if(target.pathname==="/functions/v1/swayphics-ai"){
+    var requestBody="";
+    var payload={};
+    try{
+     if(init&&typeof init.body==="string")requestBody=init.body;
+     else if(typeof Request!=="undefined"&&input instanceof Request)requestBody=await input.clone().text();
+     payload=JSON.parse(requestBody||"{}");
+    }catch(_){return blocked("The preview only accepts valid JSON for its local mock stream.");}
+    if(payload.stream_response!==true||typeof payload.message!=="string"||!payload.message.trim()||payload.message.length>4000){
+     return blocked("Only a bounded streaming-chat UI payload is supported; no model request was sent.");
+    }
+    if(Number(window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__||0)>=1){
+     return blocked("Only one local mock stream is allowed per page load; no model request was sent.");
+    }
+    window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__=Number(window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__||0)+1;
+    var tick=String.fromCharCode(96);
+    var unsafeMarkup="<"+"script id=\\"innerme-preview-injected\\">window.__INNERME_PREVIEW_INJECTED__=true;</"+"script>";
+    var mockChunks=[
+     "## Preview-only streamed response\\n\\nThis is a **local mock**; no AI model or provider was contacted.\\n\\n",
+     "### Markdown rendering checks\\n\\n- **Bold text** and *italic text*\\n- Inline code: "+tick+"stream_response"+tick+"\\n\\n",
+     tick.repeat(3)+"js\\nconst previewMode = true;\\n"+tick.repeat(3)+"\\n\\n| Check | Result |\\n| --- | --- |\\n| Provider call | None |\\n| SSE UI | Simulated |\\n\\n[Safe external link](https://example.com)\\n\\n"+unsafeMarkup
+    ];
+    var mockAnswer=mockChunks.join("");
+    var eventFrames=[
+     "event: phase\\ndata: "+JSON.stringify({status:"Receiving local preview stream…"})+"\\n\\n",
+     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[0]})+"\\n\\n",
+     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[1]})+"\\n\\n",
+     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[2]})+"\\n\\n",
+     "event: phase\\ndata: "+JSON.stringify({status:"Finalizing local preview response…"})+"\\n\\n",
+     "event: done\\ndata: "+JSON.stringify({answer:mockAnswer,model:"preview-mock",read_only:true,knowledge_retrieval:{match_count:0,retrieval_error:null,status:"mock"},knowledge_attribution:[],server_metrics:{preview_mock:true,provider_calls:0}})+"\\n\\n"
+    ];
+    var encoder=new TextEncoder();
+    var mockBody=new ReadableStream({start:function(controller){eventFrames.forEach(function(frame){controller.enqueue(encoder.encode(frame));});controller.close();}});
+    console.info("[InnerMe test preview] returned local mock SSE; no provider request was made.");
+    return new Response(mockBody,{status:200,headers:{"Content-Type":"text/event-stream; charset=utf-8","Cache-Control":"no-store","X-InnerMe-Request-ID":"preview-mock-"+String(window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__)}});
+   }
   }
   return blocked("Blocked a non-read-only operation in the isolated InnerMe preview.");
  };

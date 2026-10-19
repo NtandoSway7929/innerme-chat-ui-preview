@@ -9651,7 +9651,7 @@ body.sway-dark-mode .sway-ai-form {
 
 
         /* The row menus are portalled to <body>
-<div id="innerme-test-preview-banner" role="status">TEST-ONLY PREVIEW &nbsp;·&nbsp; ISOLATED SUPABASE &nbsp;·&nbsp; NON-CHAT MUTATIONS BLOCKED</div> while open, so style them outside the workspace tree. */
+<div id="innerme-test-preview-banner" role="status">TEST-ONLY &nbsp;·&nbsp; ISOLATED TEST DATA &nbsp;·&nbsp; CHAT SENDS OFF</div> while open, so style them outside the workspace tree. */
         .sway-actions-dropdown .sway-row-action,
         .sway-lead-actions-dropdown .sway-row-action {
             min-height: 40px !important;
@@ -11523,16 +11523,7 @@ html.dark-mode .sway-ai-revenue-opportunity {
   if(readOnly)return nativeFetch(input,init);
   if(target.origin===TEST_ORIGIN&&method==="POST"){
    if(target.pathname==="/auth/v1/token"||target.pathname==="/auth/v1/logout")return nativeFetch(input,init);
-   if(target.pathname==="/functions/v1/swayphics-ai"){
-    var requestBody="";
-    try{
-     if(init&&typeof init.body==="string")requestBody=init.body;
-     else if(typeof Request!=="undefined"&&input instanceof Request)requestBody=await input.clone().text();
-     var payload=JSON.parse(requestBody||"{}");
-     if(payload.action==="assistant_chat"&&payload.stream_response===true&&typeof payload.message==="string"&&payload.message.trim().length>0&&payload.message.length<=4000)return nativeFetch(input,init);
-    }catch(_){return blocked("The preview only accepts valid streaming-chat payloads.");}
-    return blocked("The isolated preview only permits the streaming assistant_chat route.");
-   }
+   if(target.pathname==="/functions/v1/swayphics-ai")return blocked("Chat sending is disabled in this visual QA preview.");
   }
   return blocked("Blocked a non-read-only operation in the isolated InnerMe preview.");
  };

@@ -475,7 +475,15 @@
                 Sign in
             </button>
 
-        </form>
+
+        <div class="preview-simulation" style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(0,32,150,.10);">
+            <button
+                type="button"
+                id="preview-chat-button"
+                style="width:100%;min-height:44px;padding:10px 14px;border:1px solid rgba(0,32,150,.18);border-radius:12px;background:#fff;color:#002096;font:700 13px/1.4 'Plus Jakarta Sans',Arial,sans-serif;cursor:pointer;"
+            >Open UI-only chat simulation</button>
+            <p style="margin:8px 0 0;color:#68748d;font-size:11px;line-height:1.55;text-align:center;">No credentials, production data, or AI provider request. Uses a synthetic session and a local mock stream.</p>
+        </div>
 
 
         <div
@@ -529,6 +537,59 @@
         document.getElementById(
             "login-status"
         );
+
+
+    /* =========================================================
+       ISOLATED UI-ONLY SIMULATION
+       This button exists only in the separate GitHub Pages preview.
+       It seeds a synthetic client-side session. The dashboard's
+       preview guard mocks the chat stream and blocks other writes.
+       ========================================================= */
+
+    const previewChatButton =
+        document.getElementById("preview-chat-button");
+
+    previewChatButton?.addEventListener("click", function () {
+        const encodeBase64Url = function (value) {
+            return btoa(value)
+                .replace(/=/g, "")
+                .replace(/\\+/g, "-")
+                .replace(/\\//g, "_");
+        };
+
+        const header = encodeBase64Url(
+            JSON.stringify({ alg: "none", typ: "JWT" })
+        );
+        const payload = encodeBase64Url(
+            JSON.stringify({
+                sub: "63f9220c-7f94-4335-9c29-29a9e1231ea6",
+                email: "ui-preview@example.invalid",
+                role: "authenticated",
+                exp: Math.floor(Date.now() / 1000) + 7200
+            })
+        );
+
+        sessionStorage.setItem(
+            "swayphics_admin_access_token",
+            header + "." + payload + ".preview-only-not-a-real-signature"
+        );
+        sessionStorage.setItem(
+            "swayphics_admin_refresh_token",
+            "preview-only-not-a-real-refresh-token"
+        );
+        sessionStorage.setItem(
+            "swayphics_innerme_ui_simulation",
+            "true"
+        );
+
+        loginStatus.textContent =
+            "Opening the isolated UI simulation. No provider request will be sent.";
+        loginStatus.className = "status success";
+        loginStatus.hidden = false;
+
+        window.location.href =
+            "/innerme-chat-ui-preview/admin-dashboard/?view=swayphics-ai&simulation=local";
+    });
 
 
     /* =========================================================

@@ -11513,7 +11513,7 @@ html.dark-mode .sway-ai-revenue-opportunity {
  // Explicitly seed the synthetic browser session only for the local UI-simulation route.
  // This runs before the dashboard's auth/session scripts read sessionStorage.
  if(new URLSearchParams(window.location.search).get("simulation")==="local"){
-  var encPreviewTokenPart=function(value){return btoa(value).replace(/=/g,"").replace(/\\+/g,"-").replace(/\\//g,"_");};
+  var encPreviewTokenPart=function(value){return btoa(value).replace(/=/g,"").replaceAll("+","-").replaceAll("/","_");};
   var previewHeader=encPreviewTokenPart(JSON.stringify({alg:"none",typ:"JWT"}));
   var previewClaims=encPreviewTokenPart(JSON.stringify({
    sub:"63f9220c-7f94-4335-9c29-29a9e1231ea6",

@@ -11,7 +11,18 @@ test("InnerMe preview streams and safely formats a local mock response", async (
   const pageErrors = [];
   const supabaseRequests = [];
 
-  page.on("pageerror", error => pageErrors.push(error.message));
+  page.on("pageerror", error => {
+    pageErrors.push(error.message);
+    console.log("BROWSER_PAGE_ERROR", error.message);
+  });
+  page.on("console", message => {
+    if (message.type() === "error" || message.text().includes("InnerMe test preview")) {
+      console.log("BROWSER_CONSOLE", message.type(), message.text());
+    }
+  });
+  page.on("framenavigated", frame => {
+    if (frame === page.mainFrame()) console.log("BROWSER_NAVIGATION", frame.url());
+  });
   page.on("request", request => {
     if (request.url().includes(".supabase.co/")) {
       supabaseRequests.push({
@@ -43,8 +54,24 @@ test("InnerMe preview streams and safely formats a local mock response", async (
     }).click();
 
     await expect(page).toHaveURL(/\/admin-dashboard\/\?view=swayphics-ai/);
+    await page.waitForTimeout(800);
+    console.log("SIMULATION_DEBUG", JSON.stringify(await page.evaluate(() => ({
+      url: location.href,
+      accessTokenPresent: Boolean(sessionStorage.getItem("swayphics_admin_access_token")),
+      accessTokenPayload: (() => {
+        try {
+          const token = sessionStorage.getItem("swayphics_admin_access_token") || "";
+          return token.split(".").length > 1
+            ? JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")))
+            : null;
+        } catch (_) { return "unreadable"; }
+      })(),
+      previewFlag: window.__SWAYPHICS_INNERME_TEST_PREVIEW__,
+      mockStreamCount: window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__,
+      bodyText: document.body.innerText.slice(0, 700)
+    })), null, 2));
     await expect(page.locator("#innerme-test-preview-banner")).toBeVisible();
-    await expect(page.locator("#sway-ai-input")).toBeVisible({ timeout: 30000 });
+    await expect(page.locator("#sway-ai-input")).toBeVisible({ timeout: 8000 });
 
     await page.locator("#sway-ai-input").fill("Show the preview response");
     await page.locator("#sway-ai-form button[type='submit']").click();

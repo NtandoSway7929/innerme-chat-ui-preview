@@ -18877,7 +18877,7 @@ function simpleBars(items, color) {
             const base =
                 window.location.origin +
                 window.location.pathname
-                    .split("/admin-dashboard/")[0]
+                    .split("/innerme-chat-ui-preview/admin-dashboard/")[0]
                     .replace(/\/$/, "");
 
             const link =

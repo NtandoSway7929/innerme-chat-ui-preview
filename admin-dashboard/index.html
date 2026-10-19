@@ -11539,21 +11539,24 @@ html.dark-mode .sway-ai-revenue-opportunity {
      return blocked("Only one local mock stream is allowed per page load; no model request was sent.");
     }
     window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__=Number(window.__SWAYPHICS_PREVIEW_MOCK_STREAMS__||0)+1;
+    var nl=String.fromCharCode(10);
+    var blank=nl+nl;
     var tick=String.fromCharCode(96);
-    var unsafeMarkup="<"+"script id=\\"innerme-preview-injected\\">window.__INNERME_PREVIEW_INJECTED__=true;</"+"script>";
+    var quote=String.fromCharCode(34);
+    var unsafeMarkup="<"+"script id="+quote+"innerme-preview-injected"+quote+">window.__INNERME_PREVIEW_INJECTED__=true;</"+"script>";
     var mockChunks=[
-     "## Preview-only streamed response\\n\\nThis is a **local mock**; no AI model or provider was contacted.\\n\\n",
-     "### Markdown rendering checks\\n\\n- **Bold text** and *italic text*\\n- Inline code: "+tick+"stream_response"+tick+"\\n\\n",
-     tick.repeat(3)+"js\\nconst previewMode = true;\\n"+tick.repeat(3)+"\\n\\n| Check | Result |\\n| --- | --- |\\n| Provider call | None |\\n| SSE UI | Simulated |\\n\\n[Safe external link](https://example.com)\\n\\n"+unsafeMarkup
+     "## Preview-only streamed response"+blank+"This is a **local mock**; no AI model or provider was contacted."+blank,
+     "### Markdown rendering checks"+blank+"- **Bold text** and *italic text*"+nl+"- Inline code: "+tick+"stream_response"+tick+blank,
+     tick.repeat(3)+"js"+nl+"const previewMode = true;"+nl+tick.repeat(3)+blank+"| Check | Result |"+nl+"| --- | --- |"+nl+"| Provider call | None |"+nl+"| SSE UI | Simulated |"+blank+"[Safe external link](https://example.com)"+blank+unsafeMarkup
     ];
     var mockAnswer=mockChunks.join("");
     var eventFrames=[
-     "event: phase\\ndata: "+JSON.stringify({status:"Receiving local preview stream…"})+"\\n\\n",
-     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[0]})+"\\n\\n",
-     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[1]})+"\\n\\n",
-     "event: delta\\ndata: "+JSON.stringify({text:mockChunks[2]})+"\\n\\n",
-     "event: phase\\ndata: "+JSON.stringify({status:"Finalizing local preview response…"})+"\\n\\n",
-     "event: done\\ndata: "+JSON.stringify({answer:mockAnswer,model:"preview-mock",read_only:true,knowledge_retrieval:{match_count:0,retrieval_error:null,status:"mock"},knowledge_attribution:[],server_metrics:{preview_mock:true,provider_calls:0}})+"\\n\\n"
+     "event: phase"+nl+"data: "+JSON.stringify({status:"Receiving local preview stream…"})+blank,
+     "event: delta"+nl+"data: "+JSON.stringify({text:mockChunks[0]})+blank,
+     "event: delta"+nl+"data: "+JSON.stringify({text:mockChunks[1]})+blank,
+     "event: delta"+nl+"data: "+JSON.stringify({text:mockChunks[2]})+blank,
+     "event: phase"+nl+"data: "+JSON.stringify({status:"Finalizing local preview response…"})+blank,
+     "event: done"+nl+"data: "+JSON.stringify({answer:mockAnswer,model:"preview-mock",read_only:true,knowledge_retrieval:{match_count:0,retrieval_error:null,status:"mock"},knowledge_attribution:[],server_metrics:{preview_mock:true,provider_calls:0}})+blank
     ];
     var encoder=new TextEncoder();
     var mockBody=new ReadableStream({start:function(controller){eventFrames.forEach(function(frame){controller.enqueue(encoder.encode(frame));});controller.close();}});
@@ -14646,7 +14649,7 @@ portfolioForm.addEventListener(
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="admin-workspace.js?v=innerme-preview-banner-persistent-1"></script>
+<script src="admin-workspace.js?v=innerme-preview-mock-stream-2"></script>
 <script src="innerme-knowledge-intelligence.js?v=20261015-run-controller-1"></script>
 <script src="innerme-predictive-intelligence.js?v=20261008-innerme-nav-polish-2"></script>
 <script src="innerme-autonomy.js?v=20261008-innerme-nav-polish-2"></script>

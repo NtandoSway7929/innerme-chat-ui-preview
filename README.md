@@ -2,7 +2,8 @@
 
 Temporary, test-only browser preview of the Swayphics InnerMe chat interface from PR #96.
 
-- Connected to the isolated Supabase project `Swayphics InnerMe Test` only.
-- Not for production use; no custom domain is configured.
-- Chat sending/model requests are disabled for UI QA. A previous separately authorized test already verified one streaming backend response.
-- All non-auth writes are blocked by the browser-side preview guard. The preview uses session storage for per-tab auth tokens and carries no production API credentials.
+- Connected only to the isolated Supabase project `Swayphics InnerMe Test` for admin sign-in and read-only setup.
+- Hosted on GitHub Pages for QA only; not for production use.
+- Chat UI submissions are intercepted in the browser and return one synthetic local Server-Sent Events (SSE) response per page load. The mock is designed to exercise the real frontend renderer without contacting Gemini or any model provider.
+- Mock content covers Markdown headings, lists, inline/fenced code, tables, a safe external link, and HTML/script escaping.
+- Other non-read-only REST/function writes are blocked. Push notifications are disabled. Preview auth tokens use per-tab session storage. Production Supabase URL/keys are absent from the preview configuration.

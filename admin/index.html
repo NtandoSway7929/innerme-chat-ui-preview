@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta name="robots" content="noindex, nofollow, noarchive">
+
+    <meta
+        name="description"
+        content="Swayphics private administration."
+    >
+
+    <link rel="icon" type="image/webp" href="../FIST.webp">
+
+    <title>
+        Swayphics Admin
+    </title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+
+        :root {
+            --sway-blue: #0152F4;
+            --sway-deep: #002096;
+            --sway-dark: #081533;
+            --text-muted: #56627A;
+            --border: rgba(0,32,150,0.10);
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 24px;
+
+            background:
+                linear-gradient(
+                    rgba(244,247,252,0.90),
+                    rgba(244,247,252,0.90)
+                ),
+                url("../background branded wallpaper.webp")
+                    center / cover fixed no-repeat;
+
+            color: var(--sway-dark);
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        .admin-container {
+
+            width: min(460px, 100%);
+        }
+
+
+        .brand {
+
+    text-align: center;
+
+    margin-bottom: 34px;
+}
+
+
+.brand a {
+
+    display: inline-block;
+
+    text-decoration: none;
+}
+
+
+.brand-logo {
+
+    width: 170px;
+
+    height: auto;
+
+    display: block;
+
+    margin: 0 auto 16px;
+}
+
+
+.brand p {
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+
+    letter-spacing: 0.02em;
+}
+
+        .login-card {
+
+            padding: 34px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 24px;
+
+            background:
+                rgba(255,255,255,0.90);
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,32,150,0.10);
+
+            backdrop-filter: blur(20px);
+
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+
+        .login-heading {
+
+            margin-bottom: 26px;
+        }
+
+
+        .login-heading span {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: var(--sway-blue);
+
+            font-size: 0.65rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.18em;
+
+            text-transform: uppercase;
+        }
+
+
+        .login-heading h2 {
+
+            font-size: 1.6rem;
+
+            letter-spacing: -0.04em;
+        }
+
+
+        .form {
+
+            display: grid;
+
+            gap: 18px;
+        }
+
+
+        .field {
+
+            display: grid;
+
+            gap: 8px;
+        }
+
+
+        .field label {
+
+            font-size: 0.76rem;
+
+            font-weight: 800;
+        }
+
+
+        .field input {
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border:
+                1px solid
+                rgba(0,32,150,0.13);
+
+            border-radius: 12px;
+
+            background: #FFFFFF;
+
+            color: var(--sway-dark);
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            font-size: 0.9rem;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .field input:focus {
+
+            border-color: var(--sway-blue);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(1,82,244,0.08);
+        }
+
+
+        .login-button {
+
+            width: 100%;
+
+            margin-top: 6px;
+
+            padding: 15px 20px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--sway-deep),
+                    var(--sway-blue)
+                );
+
+            color: #FFFFFF;
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            font-size: 0.82rem;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .login-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 28px
+                rgba(1,82,244,0.22);
+        }
+
+
+        .login-button:disabled {
+
+            opacity: 0.65;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+
+        .status {
+
+            margin-top: 16px;
+
+            padding: 12px 14px;
+
+            border-radius: 10px;
+
+            font-size: 0.78rem;
+
+            line-height: 1.5;
+
+            text-align: center;
+        }
+
+
+        .status.error {
+
+            background:
+                rgba(180,30,30,0.07);
+
+            color: #9B1C1C;
+        }
+
+
+        .status.success {
+
+            background:
+                rgba(1,82,244,0.07);
+
+            color: var(--sway-deep);
+        }
+
+
+        .footer {
+
+            margin-top: 22px;
+
+            text-align: center;
+
+            color: var(--text-muted);
+
+            font-size: 0.68rem;
+        }
+
+
+        @media (max-width: 520px) {
+
+            .login-card {
+                padding: 26px 20px;
+            }
+
+        }
+
+    </style>
+
+<style id="innerme-test-preview-style">#innerme-test-preview-banner{position:fixed;inset:0 0 auto;min-height:34px;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:7px 14px;background:#fff3d6;color:#5a3b00;border-bottom:1px solid #e9c875;font:700 11px/1.4 'Plus Jakarta Sans',Arial,sans-serif;letter-spacing:.035em;text-align:center;box-shadow:0 2px 12px rgba(30,40,60,.08)}body{padding-top:36px!important}.sway-push-control{display:none!important}</style><script id="innerme-preview-safety-guard">
+(function () {
+ "use strict"; var TEST_ORIGIN="https://ofqofhnlzbouclvvrmzd.supabase.co";
+ window.__SWAYPHICS_INNERME_TEST_PREVIEW__=true;
+ if(window.__SWAYPHICS_PREVIEW_GUARD_INSTALLED__)return;
+ window.__SWAYPHICS_PREVIEW_GUARD_INSTALLED__=true;
+ var nativeFetch=window.fetch.bind(window);
+ function blocked(message){console.warn("[InnerMe test preview safety gate]",message);return Promise.reject(new Error(message));}
+ window.fetch=async function(input,init){
+  var rawUrl=typeof input==="string"||input instanceof URL?String(input):(input&&input.url),target;
+  try{target=new URL(rawUrl,window.location.href);}catch(_){return blocked("Blocked invalid URL in the isolated preview.");}
+  var method=String((init&&init.method)||(typeof Request!=="undefined"&&input instanceof Request?input.method:"GET")).toUpperCase();
+  var readOnly=method==="GET"||method==="HEAD"||method==="OPTIONS";
+  if(target.hostname.toLowerCase().endsWith(".supabase.co")&&target.origin!==TEST_ORIGIN)return blocked("Blocked a Supabase request outside Swayphics InnerMe Test.");
+  if(readOnly)return nativeFetch(input,init);
+  if(target.origin===TEST_ORIGIN&&method==="POST"){
+   if(target.pathname==="/auth/v1/token"||target.pathname==="/auth/v1/logout")return nativeFetch(input,init);
+   if(target.pathname==="/functions/v1/swayphics-ai"){
+    var requestBody="";
+    try{
+     if(init&&typeof init.body==="string")requestBody=init.body;
+     else if(typeof Request!=="undefined"&&input instanceof Request)requestBody=await input.clone().text();
+     var payload=JSON.parse(requestBody||"{}");
+     if(payload.action==="assistant_chat"&&payload.stream_response===true&&typeof payload.message==="string"&&payload.message.trim().length>0&&payload.message.length<=4000)return nativeFetch(input,init);
+    }catch(_){return blocked("The preview only accepts valid streaming-chat payloads.");}
+    return blocked("The isolated preview only permits the streaming assistant_chat route.");
+   }
+  }
+  return blocked("Blocked a non-read-only operation in the isolated InnerMe preview.");
+ };
+})();
+</script>
+</head>
+
+
+<body>
+<div id="innerme-test-preview-banner" role="status">TEST-ONLY PREVIEW &nbsp;·&nbsp; ISOLATED SUPABASE &nbsp;·&nbsp; NON-CHAT MUTATIONS BLOCKED</div>
+
+<main class="admin-container">
+
+
+    <header class="brand">
+
+    <a href="../" aria-label="Swayphics home">
+
+        <img
+            src="../swayphics-logo.png"
+            alt="Swayphics"
+            class="brand-logo"
+        >
+
+    </a>
+
+    <p>
+        Private administration
+    </p>
+
+</header>
+
+
+    <section class="login-card">
+
+        <div class="login-heading">
+
+            <span>
+                Admin access
+            </span>
+
+            <h2>
+                Welcome back.
+            </h2>
+
+        </div>
+
+
+        <form
+            class="form"
+            id="admin-login-form"
+        >
+
+            <div class="field">
+
+                <label for="admin-email">
+                    Email address
+                </label>
+
+                <input
+                    type="email"
+                    id="admin-email"
+                    name="email"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="admin-password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="admin-password"
+                    name="password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="login-button"
+                id="login-button"
+            >
+                Sign in
+            </button>
+
+        </form>
+
+
+        <div
+            class="status"
+            id="login-status"
+            hidden
+            aria-live="polite"
+        ></div>
+
+    </section>
+
+
+    <footer class="footer">
+
+        Swayphics · Empowering through design.
+
+    </footer>
+
+
+</main>
+
+
+<script>
+
+    /* =========================================================
+       SUPABASE AUTH
+       ========================================================= */
+
+    const SUPABASE_URL =
+        "https://ofqofhnlzbouclvvrmzd.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_p4UqpaLvEx_93XJSWvzo6Q_loju0xzW";
+
+
+    /* =========================================================
+       ELEMENTS
+       ========================================================= */
+
+    const loginForm =
+        document.getElementById(
+            "admin-login-form"
+        );
+
+    const loginButton =
+        document.getElementById(
+            "login-button"
+        );
+
+    const loginStatus =
+        document.getElementById(
+            "login-status"
+        );
+
+
+    /* =========================================================
+       LOGIN
+       ========================================================= */
+
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const email =
+                document
+                    .getElementById(
+                        "admin-email"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "admin-password"
+                    )
+                    .value;
+
+
+            loginButton.disabled =
+                true;
+
+            loginButton.textContent =
+                "Signing in...";
+
+
+            loginStatus.hidden =
+                true;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "apikey":
+                                    SUPABASE_PUBLISHABLE_KEY,
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    email,
+                                    password
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.error_description ||
+                        "Invalid login details."
+                    );
+
+                }
+
+
+                /*
+                 * Store the authenticated session
+                 * locally so the next admin page
+                 * can use it.
+                 */
+
+                sessionStorage.setItem(
+                    "swayphics_admin_access_token",
+                    data.access_token
+                );
+
+                sessionStorage.setItem(
+                    "swayphics_admin_refresh_token",
+                    data.refresh_token
+                );
+
+
+                loginStatus.textContent =
+                    "Login successful. Opening the admin dashboard...";
+
+                loginStatus.className =
+                    "status success";
+
+                loginStatus.hidden =
+                    false;
+
+
+                /*
+                 * Dashboard will be created
+                 * in the next phase.
+                 */
+
+                setTimeout(
+                    () => {
+
+                       window.location.href =
+                          "/admin-dashboard/";
+
+                    },
+                    700
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Admin login failed:",
+                    error
+                );
+
+
+                loginStatus.textContent =
+                    error.message ||
+                    "Unable to sign in.";
+
+                loginStatus.className =
+                    "status error";
+
+                loginStatus.hidden =
+                    false;
+
+
+            } finally {
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "Sign in";
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

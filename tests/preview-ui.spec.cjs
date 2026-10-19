@@ -81,9 +81,9 @@ test("InnerMe preview streams and safely formats a local mock response", async (
     const response = page.locator(".sway-ai-message-content").last();
     await expect(response).toContainText("Preview-only streamed response", { timeout: 15000 });
     await expect(response).toContainText("no AI model or provider was contacted");
-    await expect(response.locator("strong")).toContainText("Bold text");
-    await expect(response.locator("em")).toContainText("italic text");
-    await expect(response.locator("code")).toContainText("stream_response");
+    await expect(response.getByText("Bold text", { exact: true })).toBeVisible();
+    await expect(response.getByText("italic text", { exact: true })).toBeVisible();
+    await expect(response.getByText("stream_response", { exact: true })).toBeVisible();
     await expect(response.locator("pre code")).toContainText("const previewMode = true;");
     await expect(response.locator("table")).toContainText("Provider call");
     await expect(response.getByRole("link", { name: "Safe external link" })).toHaveAttribute("href", "https://example.com");

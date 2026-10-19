@@ -11535,6 +11535,40 @@ html.dark-mode .sway-ai-revenue-opportunity {
   var method=String((init&&init.method)||(typeof Request!=="undefined"&&input instanceof Request?input.method:"GET")).toUpperCase();
   var readOnly=method==="GET"||method==="HEAD"||method==="OPTIONS";
   if(target.hostname.toLowerCase().endsWith(".supabase.co")&&target.origin!==TEST_ORIGIN)return blocked("Blocked a Supabase request outside Swayphics InnerMe Test.");
+  var simulationMode =
+   window.__SWAYPHICS_INNERME_TEST_PREVIEW__ === true &&
+   new URLSearchParams(window.location.search).get("simulation") === "local";
+  if(readOnly && target.origin===TEST_ORIGIN && simulationMode){
+   // All test UI reads are served from local in-memory fixtures. No Supabase
+   // network request is allowed or needed to render the chat shell.
+   var fixtureHeaders={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
+   if(target.pathname==="/auth/v1/user"){
+    return Promise.resolve(new Response(JSON.stringify({
+     id:"63f9220c-7f94-4335-9c29-29a9e1231ea6",
+     email:"ui-preview@example.invalid",
+     aud:"authenticated",
+     role:"authenticated",
+     app_metadata:{provider:"preview"},
+     user_metadata:{name:"UI Preview"}
+    }),{status:200,headers:fixtureHeaders}));
+   }
+   if(target.pathname==="/auth/v1/settings"){
+    return Promise.resolve(new Response(JSON.stringify({}),{status:200,headers:fixtureHeaders}));
+   }
+   if(target.pathname==="/rest/v1/admin_users"){
+    return Promise.resolve(new Response(JSON.stringify([{
+     user_id:"63f9220c-7f94-4335-9c29-29a9e1231ea6",
+     email:"ui-preview@example.invalid",
+     full_name:"InnerMe UI Preview",
+     role:"test_viewer",
+     active:true,
+     created_at:"2026-10-19T00:00:00.000Z"
+    }]),{status:200,headers:fixtureHeaders}));
+   }
+   if(target.pathname.startsWith("/rest/v1/") || target.pathname.startsWith("/functions/v1/")){
+    return Promise.resolve(new Response("[]",{status:200,headers:fixtureHeaders}));
+   }
+  }
   if(readOnly)return nativeFetch(input,init);
   if(target.origin===TEST_ORIGIN&&method==="POST"){
    if(target.pathname==="/auth/v1/token"||target.pathname==="/auth/v1/logout")return nativeFetch(input,init);
